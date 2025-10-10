@@ -6,10 +6,10 @@ import java.awt.Color;
 // API help : https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
 
 /**
- * Bastion - a robot by (Nicole)
+ * Bastion - a robot by (Nicole & Fofolet)
  */
 public class Bastion extends Robot {
-	boolean movingForward;
+	
 
 	/**
 	 * run: Bastion's default behavior
