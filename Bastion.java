@@ -2,36 +2,36 @@ package bastion;
 
 import robocode.*;
 import java.awt.Color;
+import java.util.Random;
+import java.awt.geom.Point2D
 
-// API help : https://robocode.sourceforge.io/docs/robocode/robocode/Robot.html
 
 /**
- * Bastion - a robot by (Nicole)
+ * Bastion - a robot by (Nicole & Fofolet)
  */
 public class Bastion extends Robot {
-	boolean movingForward;
+	//informacoes do inimigo
+	double enemyEnergy = 100; //energia do inimigo
+	double enemyAngulo; //angulo da direcao que o inimigo esta
+	double enemyDistancia; //distancia ate o inimigo
+	double enemyMov; //angulo da direcao que o inimigo esta se movendo
+	double enemyAngAbs; //angulo absoluto, meu angulo x angulo inimigo. posiciona o radar
 
-	/**
-	 * run: Bastion's default behavior
-	 */
+	int move = 1;
+	Random lerolero = new Random(); //gera movimento aleatorio
+	double distanciaAlvo = 300; //teste de distancia do inimigo
+
 	public void run() {
-		// Initialization of the robot should be put here
-
-		// After trying out your robot, try uncommenting the import at the top,
-		// and the next line:
-
 		setColors(Color.magenta, Color.cyan, Color.white, Color.red, Color.magenta);
-		// body,gun,radar
+		
+		setAdjustGunForRobotTurn(true); //arma independente do corpinho
+		setAdjustRadarForRobotTurn(true); //radar independente do corpinho
+		setAdjustRadarForGunTurn(true); //radar independente do cano
 
-		// Robot main loop
+		// inicialmente...
 		while (true) {
-			// teste de movimentação zigzag
-			ahead(100);
-			turnRight(120);
-			turnGunRight(180);
-			back(100);
-			turnLeft(120);
-			turnGunLeft(180);
+			// teste de movimentacao, aqui ele so vai aguardar os eventos
+			execute();
 
 		}
 	}
@@ -41,12 +41,24 @@ public class Bastion extends Robot {
 	 */
 	public void onScannedRobot(ScannedRobotEvent e) {
 		// teste de dano
-		fire(3);
+		enemyAngulo = e.getBearingRadians();
+		enemyDistancia = e.getDistance();
+		enemyMov = e.getVelocity();
+		enemyAngAbs = e.getHeadingRadians
+
+		//calcula a posicao do inimigo
+		enemyX = getX + Math.sin(enemyAngAbs) * enemyDistancia;
+		enemy = getY + Math.cos(enemyAngAbs) * enemyDistancia;
+
+		//continua rastreando
+		double radarGira = Utilis.normalRelativeAngle(enemyAngAbs - getRadarHeadingRadians());
+
+		setTurnRadarRightRadian(Utilis.normalRelativeAngle(radarTurn)*2); //escaneia 2x para garantir
+
+		//queda de energia do inimigo? entao: !!!!!!!!CONTINUAR DAQUI!!!!!!!!!!!!
 	}
 
-	/**
-	 * onHitByBullet: What to do when you're hit by a bullet
-	 */
+	
 	public void onHitByBullet(HitByBulletEvent e) {
 		// teste de recuo
 		back(10);
