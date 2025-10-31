@@ -3,19 +3,17 @@ package bastion;
 import robocode.*;
 import java.awt.Color;
 import java.util.Random;
-import java.awt.geom.Point2D
-
 
 /**
  * Bastion - a robot by (Nicole & Fofolet)
  */
-public class Bastion extends Robot {
+public class Bastion extends AdvancedRobot {
 	//informacoes do inimigo
 	double enemyEnergy = 100; //energia do inimigo
 	double enemyAngulo; //angulo da direcao que o inimigo esta
 	double enemyDistancia; //distancia ate o inimigo
 	double enemyMov; //angulo da direcao que o inimigo esta se movendo
-	double enemyAngAbs; //angulo absoluto, meu angulo x angulo inimigo. posiciona o radar
+	double enemyX, enemyY; //angulo absoluto, meu angulo x angulo inimigo. posiciona o radar
 
 	int move = 1;
 	Random lerolero = new Random(); //gera movimento aleatorio
@@ -44,16 +42,6 @@ public class Bastion extends Robot {
 		enemyAngulo = e.getBearingRadians();
 		enemyDistancia = e.getDistance();
 		enemyMov = e.getVelocity();
-		enemyAngAbs = e.getHeadingRadians
-
-		//calcula a posicao do inimigo
-		enemyX = getX + Math.sin(enemyAngAbs) * enemyDistancia;
-		enemy = getY + Math.cos(enemyAngAbs) * enemyDistancia;
-
-		//continua rastreando
-		double radarGira = Utilis.normalRelativeAngle(enemyAngAbs - getRadarHeadingRadians());
-
-		setTurnRadarRightRadian(Utilis.normalRelativeAngle(radarTurn)*2); //escaneia 2x para garantir
 
 		//queda de energia do inimigo? entao: !!!!!!!!CONTINUAR DAQUI!!!!!!!!!!!!
 	}
