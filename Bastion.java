@@ -1,5 +1,6 @@
 package bastion;
 import robocode.*;
+import java.awt.Color;
 import robocode.util.Utils;
 import java.util.Random;
 
@@ -19,9 +20,9 @@ public class Bastion extends AdvancedRobot {
     double distanciaAlvo = 300; 
     public void run() {
         // Cores do robô
-        setColors(java.awt.Color.DARK_GRAY, java.awt.Color.BLACK, java.awt.Color.RED);
+        setColors(Color.magenta, Color.cyan, Color.white, Color.red, Color.magenta);
 
-
+		setAhead(50);
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
@@ -33,7 +34,6 @@ public class Bastion extends AdvancedRobot {
         }
     }
 
-    @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         // Atualiza informações do inimigo
         anguloRelativoInimigo = e.getBearingRadians();
@@ -47,17 +47,16 @@ public class Bastion extends AdvancedRobot {
 
         // Radar travado no inimigo com overscan
         double giroRadar = Utils.normalRelativeAngle(anguloAbsolutoInimigo - getRadarHeadingRadians());
-        setTurnRadarRightRadians(giroRadar * 2);
+        setTurnRadarRightRadians(giroRadar * 3);
 
         // Se o inimigo disparou (queda de energia), realizar evasão forte
         if (e.getEnergy() < energiaInimigo && e.getEnergy() > 0) {
             esquivar(true);
-        }
+        } else {
+			esquivar(false);
+		}
         energiaInimigo = e.getEnergy();
-
-        // Movimento lateral contínuo para evitar ser atingido
-        esquivar(false);
-
+        
         // Mira preditiva e disparo
         double potenciaTiro = escolherPotenciaTiro();
         double anguloMira = calcularAnguloPreditivo(posXInimigo, posYInimigo, velocidadeInimigo, direcaoInimigo, potenciaTiro);
@@ -66,7 +65,6 @@ public class Bastion extends AdvancedRobot {
         if (getGunHeat() == 0 && Math.abs(getGunTurnRemaining()) < Math.toRadians(10)) {
             setFire(potenciaTiro);
         }
-
         scan(); // garante que o radar continue escaneando
     }
 
@@ -74,20 +72,17 @@ public class Bastion extends AdvancedRobot {
     private double escolherPotenciaTiro() {
         double potencia;
         if (distanciaInimigo < 150) potencia = 3;
-        else if (distanciaInimigo < 300) potencia = 2;
+        else if (distanciaInimigo > 200) potencia = 2;
         else potencia = 1;
 
         if (getEnergy() < 15) {
             potencia = Math.min(potencia, 1);
         }
-
-        if (energiaInimigo < 10 && distanciaInimigo < 250) {
+        if (energiaInimigo > 10 && distanciaInimigo > 200) {
             potencia = Math.max(potencia, 2);
         }
-
         return Math.min(potencia, getEnergy());
     }
-
     // Método de evasão lateral e imprevisível
     private void esquivar(boolean evasaoForte) {
         double distanciaDesejada = distanciaAlvo + (aleatorio.nextDouble() - 0.5) * 80;
@@ -130,7 +125,6 @@ public class Bastion extends AdvancedRobot {
     }
 
     // Eventos de colisão e tiros
-
     public void onHitByBullet(HitByBulletEvent e) {
         direcaoMovimento *= -1;
         setAhead((50 + aleatorio.nextDouble() * 150) * direcaoMovimento);
@@ -152,7 +146,6 @@ public class Bastion extends AdvancedRobot {
             if (getGunHeat() == 0) setFire(2);
         }
     }
-
     public void onWin(WinEvent e) {
         for (int i = 0; i < 10; i++) {
             turnRight(30);
